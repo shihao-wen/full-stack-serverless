@@ -58,7 +58,6 @@ custom:
         schema: ${file(models/create-image-request.json)}
 
 functions:
-
   GetGroups:
     handler: src/lambda/http/getGroups.handler
     events:
@@ -102,6 +101,9 @@ functions:
             description: Create a new image
             requestModels:
               'application/json': ImageRequest
+              
+  SendUploadNotifications:
+    handler: src/lambda/s3/sendNotifications.handler
 
 resources:
   Resources:
@@ -155,6 +157,10 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.IMAGES_S3_BUCKET}
+        NotificationConfiguration:
+          LambdaConfigurations:
+            - Event: s3:ObjectCreated:*
+              Function: !GetAtt SendUploadNotificationsLambdaFunction.Arn
         CorsConfiguration: 
           CorsRules:
           -
@@ -168,7 +174,17 @@ resources:
               - HEAD
             AllowedOrigins: 
               - '*'
-            MaxAge: 300
+            MaxAge: 3000
+    
+    SendUploadNotificationsPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !Ref SendUploadNotificationsLambdaFunction
+        Principal: s3.amazonaws.com
+        Action: lambda:InvokeFunction
+        SourceAccount: !Ref AWS::AccountId
+        SourceArn: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}
+
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
