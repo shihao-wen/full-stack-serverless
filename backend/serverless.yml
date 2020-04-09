@@ -1,5 +1,5 @@
 service:
-  name: serverless-udagram-app
+  name: serverless-shihao
 
 plugins:
   - serverless-webpack
@@ -8,7 +8,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
@@ -39,7 +39,7 @@ custom:
     api:
       info:
         version: v1.0.0
-        title: Udagram API
+        title: Full-Stack API
         description: Serverless application for images sharing
     models:
       - name: GroupRequest
