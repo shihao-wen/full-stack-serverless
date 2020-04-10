@@ -20,6 +20,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 		}
 	}).promise()
 
+	// It will be a list of items
 	if (result.Count !== 0) {
 		return {
 			statusCode: 200,
