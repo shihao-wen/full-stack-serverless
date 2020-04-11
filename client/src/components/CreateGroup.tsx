@@ -1,11 +1,8 @@
 import * as React from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import { createGroup } from '../api/groups-api'
-import Auth from '../auth/Auth'
 
-interface CreateGroupProps {
-  auth: Auth
-}
+interface CreateGroupProps {}
 
 interface CreateGroupState {
   name: string
@@ -41,7 +38,7 @@ export class CreateGroup extends React.PureComponent<
       }
 
       this.setUploadState(true)
-      const group = await createGroup(this.props.auth.getIdToken(), {
+      const group = await createGroup({
         name: this.state.name,
         description: this.state.description
       })
